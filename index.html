@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Att göra</title>
+<style>
+:root{--bg:#faf7f2;--card:#fff;--ink:#2b2622;--mut:#8a8178;--line:#ece5da;--acc:#c2693f;--acc2:#3f7c6b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1917;--card:#292524;--ink:#f3ede6;--mut:#a39a90;--line:#3a3430;--acc:#e08a5f;--acc2:#6bb5a2}}
+:root[data-theme="dark"]{--bg:#1c1917;--card:#292524;--ink:#f3ede6;--mut:#a39a90;--line:#3a3430;--acc:#e08a5f;--acc2:#6bb5a2}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,system-ui,"Segoe UI",sans-serif}
+main{max-width:560px;margin:0 auto;padding:20px 16px 90px}
+h1{font:600 28px Georgia,serif;margin:8px 0 2px}
+.sub{color:var(--mut);font-size:14px;margin-bottom:14px}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;width:0;background:var(--acc2);transition:width .3s}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px}
+.tabs button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:99px;font:inherit;font-size:14px}
+.tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
+li .ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);background:none;flex:none;color:#fff;font-size:14px;padding:0}
+li.done .ck{background:var(--acc2);border-color:var(--acc2)}
+li.done .t{text-decoration:line-through;color:var(--mut)}
+.t{flex:1;word-break:break-word}
+.who{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--line);color:var(--mut);border:0}
+.x{background:none;border:0;color:var(--mut);font-size:20px;padding:0 2px}
+.empty{text-align:center;color:var(--mut);padding:30px 0}
+form{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.row{max-width:560px;margin:0 auto;display:flex;gap:8px}
+input{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:12px;font:inherit}
+.row button{border:0;border-radius:12px;background:var(--acc);color:#fff;padding:0 18px;font:inherit;font-weight:600}
+.row .w{background:var(--card);color:var(--ink);border:1px solid var(--line);font-weight:500;padding:0 12px}
+.arc{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}.arc b{flex:1;font-weight:500}.arc small{color:var(--mut);display:block;font-size:12px}.arc button,.top button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 11px;font:inherit;font-size:13px}.top{display:flex;gap:8px;margin-bottom:12px}.top button{flex:1}.tx{margin-left:8px;opacity:.7;font-size:15px}.tabs .plus{padding:8px 16px}.res{font-size:12.5px;color:var(--mut);margin-top:3px}.res a{color:var(--acc2);text-decoration:none;font-weight:500}.sk{background:none;border:0;font-size:16px;padding:0 2px;opacity:.7}.clear{background:none;border:0;color:var(--mut);font:inherit;font-size:13px;margin-top:8px;text-decoration:underline}
+</style>
+</head>
+<body>
+<main>
+<h1>Att göra</h1>
+<div class="sub" id="sub"></div>
+<div class="top"><button id="new">＋ Ny lista</button><button id="hist">Tidigare listor</button></div>
+<div class="bar"><i id="bar"></i></div>
+<div class="tabs" id="tabs"></div>
+<ul id="list"></ul>
+<div id="arch" hidden></div>
+<div style="text-align:center"><button class="clear" id="clr">Rensa avklarade</button></div>
+</main>
+<form id="f"><div class="row">
+<input id="in" placeholder="Lägg till…" autocomplete="off" enterkeyhint="done">
+<button type="button" class="w" id="who">Båda</button>
+<button type="submit">+</button>
+</div></form>
+<script>
+var DEF=["Hem","Inköp","Bröllop","Drömmar"],WHO=["Båda","Bashir","Shams"];
+var S={tasks:[],tab:"Hem",date:"",arch:[]},wi=0,showArch=false;
+try{var r=localStorage.getItem("attgora2");if(r)S=JSON.parse(r)}catch(e){}
+function $(i){return document.getElementById(i)}
+function save(){try{localStorage.setItem("attgora2",JSON.stringify(S))}catch(e){}}
+function today(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function nice(k){var p=k.split("-"),d=new Date(p[0],p[1]-1,p[2]);return d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"})}
+function rollover(label){
+  if(S.tasks.length){S.arch.unshift({date:S.date||today(),tasks:S.tasks,at:label||""})}
+  S.tasks=S.tasks.filter(function(t){return !t.d}).map(function(t){return{x:t.x,l:t.l,w:t.w,d:false}});
+  S.date=today();save();
+}
+if(S.date&&S.date!==today())rollover("Sparad automatiskt");
+if(!S.date){S.date=today();save()}
+if(!S.lists||!S.lists.length){S.lists=DEF.slice();save()}
+if(S.lists.indexOf(S.tab)<0){S.tab=S.lists[0]}
+function txt(e){
+  var o="Att göra – "+nice(e.date)+"\n";
+  var names=[];e.tasks.forEach(function(t){if(names.indexOf(t.l)<0)names.push(t.l)});
+  names.forEach(function(l){var a=e.tasks.filter(function(t){return t.l===l});if(!a.length)return;
+    o+="\n"+l.toUpperCase()+"\n";a.forEach(function(t){o+=(t.d?"[x] ":"[ ] ")+t.x+" ("+t.w+")\n"})});
+  return o}
+async function dl(name,text){
+  var b=new Blob([text],{type:"text/plain"});
+  try{var d=window.claude&&await claude.use("downloads");if(d){await d.save({filename:name,data:b});return}}catch(e){if(e&&e.code==="declined")return}
+  try{var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove()}catch(e){}
+}
+function render(){
+  $("list").hidden=showArch;$("arch").hidden=!showArch;$("tabs").hidden=showArch;$("clr").hidden=showArch;
+  $("f").hidden=showArch;$("hist").textContent=showArch?"← Tillbaka":"Tidigare listor ("+S.arch.length+")";
+  if(showArch){$("sub").textContent="Sparade listor";renderArch();return}
+  var all=S.tasks.filter(function(t){return t.l===S.tab}),done=all.filter(function(t){return t.d}).length;
+  $("sub").textContent=nice(S.date)+(all.length?" · "+done+" av "+all.length+" klara":"");
+  $("bar").style.width=all.length?(done/all.length*100)+"%":"0";
+  $("tabs").innerHTML="";
+  S.lists.forEach(function(l){var b=document.createElement("button");b.textContent=l;
+    if(l===S.tab){b.className="on";if(S.lists.length>1){var x=document.createElement("span");x.className="tx";x.textContent="×";
+      x.onclick=function(ev){ev.stopPropagation();var n=S.tasks.filter(function(t){return t.l===l}).length;
+        if(confirm("Ta bort fliken "+l+(n?" och dess "+n+" saker?":"?"))){S.tasks=S.tasks.filter(function(t){return t.l!==l});
+          S.lists=S.lists.filter(function(q){return q!==l});S.tab=S.lists[0];save();render()}};b.appendChild(x)}}
+    b.onclick=function(){S.tab=l;save();render()};$("tabs").appendChild(b)});
+  var p=document.createElement("button");p.textContent="＋";p.className="plus";
+  p.onclick=function(){var n=(prompt("Namn på ny flik:")||"").trim().slice(0,24);if(!n)return;
+    if(S.lists.indexOf(n)<0)S.lists.push(n);S.tab=n;save();render()};$("tabs").appendChild(p);
+  var ul=$("list");ul.innerHTML="";
+  if(!all.length)ul.innerHTML='<div class="empty">Skriv något nedan för att börja ✨</div>';
+  all.slice().sort(function(a,b){return a.d-b.d}).forEach(function(t){
+    var li=document.createElement("li");if(t.d)li.className="done";
+    var c=document.createElement("button");c.className="ck";c.textContent=t.d?"✓":"";
+    c.onclick=function(){t.d=!t.d;save();render()};
+    var s=document.createElement("span");s.className="t";s.textContent=t.x;
+    var w=document.createElement("span");w.className="who";w.textContent=t.w;
+    var x=document.createElement("button");x.className="x";x.textContent="×";
+    x.onclick=function(){S.tasks=S.tasks.filter(function(q){return q!==t});save();render()};
+    if(t.s&&t.s.st!=="ej"){var q=document.createElement("div");q.className="res";
+      if(t.s.st==="sok")q.textContent="🔎 Soker letar…";
+      else if(t.s.st==="ok"){var tx=t.s.butik+" · "+t.s.namn+(t.s.pris?" · "+t.s.pris:"");
+        if(t.s.url){var an=document.createElement("a");an.href=t.s.url;an.target="_blank";an.rel="noopener";an.textContent=tx;q.appendChild(an)}else q.textContent=tx}
+      else if(t.s.st==="nej")q.textContent="Hittades inte hos Willys eller ICA Maxi";
+      else q.textContent="Soker kunde inte söka just nu";
+      s.appendChild(q)}
+    var sk=null;if(!t.s||t.s.st==="fel"||t.s.st==="nej"){sk=document.createElement("button");sk.className="sk";sk.textContent="🔎";sk.title="Låt Soker leta";sk.onclick=function(){soka(t)}}
+    li.append(c,s,w);if(sk)li.append(sk);li.append(x);ul.appendChild(li)});
+}
+async function soka(t){
+  t.s={st:"sok"};save();render();
+  try{
+    var r=await fetch("/api/soker",{method:"POST",headers:{"Content-Type":"application/json","x-kod":localStorage.getItem("sokerkod")||""},body:JSON.stringify({vara:t.x})});
+    if(r.status===401){var k=prompt("Kod för Soker:");if(k){localStorage.setItem("sokerkod",k);return soka(t)}t.s=null;save();render();return}
+    var d=await r.json();t.s=r.ok&&d.st?d:{st:"fel"};
+  }catch(e){t.s={st:"fel"}}
+  save();render();
+}
+function renderArch(){
+  var a=$("arch");a.innerHTML="";
+  if(!S.arch.length){a.innerHTML='<div class="empty">Inga sparade listor än.<br>Dagens lista sparas automatiskt vid nästa dagsskifte.</div>';return}
+  S.arch.forEach(function(e,i){
+    var n=e.tasks.filter(function(t){return t.d}).length;
+    var r=document.createElement("div");r.className="arc";
+    r.innerHTML="<b></b>";r.firstChild.textContent=nice(e.date);
+    var sm=document.createElement("small");sm.textContent=n+" av "+e.tasks.length+" klara";r.firstChild.appendChild(sm);
+    var g=document.createElement("button");g.textContent="Ladda ned";g.onclick=function(){dl("att-gora-"+e.date+".txt",txt(e))};
+    var x=document.createElement("button");x.textContent="×";x.onclick=function(){if(confirm("Ta bort listan?")){S.arch.splice(i,1);save();render()}};
+    r.append(g,x);a.appendChild(r)});
+}
+$("who").onclick=function(){wi=(wi+1)%3;$("who").textContent=WHO[wi]};
+$("f").onsubmit=function(e){e.preventDefault();var v=$("in").value.trim();if(!v)return;
+  var nt={x:v,l:S.tab,w:WHO[wi],d:false};S.tasks.push(nt);$("in").value="";save();render();if(S.tab==="Inköp")soka(nt)};
+$("clr").onclick=function(){S.tasks=S.tasks.filter(function(t){return !(t.l===S.tab&&t.d)});save();render()};
+$("new").onclick=function(){if(!S.tasks.length){return}
+  if(confirm("Spara dagens lista och börja en ny? Oavklarade saker följer med.")){rollover("Sparad manuellt");showArch=false;render()}};
+$("hist").onclick=function(){showArch=!showArch;render()};
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&S.date!==today()){rollover("Sparad automatiskt");render()}});
+render();
+</script>
+</body>
+</html>
