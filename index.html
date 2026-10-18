@@ -1,152 +1,1042 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Att göra</title>
-<style>
-:root{--bg:#faf7f2;--card:#fff;--ink:#2b2622;--mut:#8a8178;--line:#ece5da;--acc:#c2693f;--acc2:#3f7c6b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1917;--card:#292524;--ink:#f3ede6;--mut:#a39a90;--line:#3a3430;--acc:#e08a5f;--acc2:#6bb5a2}}
-:root[data-theme="dark"]{--bg:#1c1917;--card:#292524;--ink:#f3ede6;--mut:#a39a90;--line:#3a3430;--acc:#e08a5f;--acc2:#6bb5a2}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,system-ui,"Segoe UI",sans-serif}
-main{max-width:560px;margin:0 auto;padding:20px 16px 90px}
-h1{font:600 28px Georgia,serif;margin:8px 0 2px}
-.sub{color:var(--mut);font-size:14px;margin-bottom:14px}
-.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:16px}
-.bar i{display:block;height:100%;width:0;background:var(--acc2);transition:width .3s}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px}
-.tabs button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:99px;font:inherit;font-size:14px}
-.tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-ul{list-style:none;margin:0;padding:0}
-li{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
-li .ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);background:none;flex:none;color:#fff;font-size:14px;padding:0}
-li.done .ck{background:var(--acc2);border-color:var(--acc2)}
-li.done .t{text-decoration:line-through;color:var(--mut)}
-.t{flex:1;word-break:break-word}
-.who{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--line);color:var(--mut);border:0}
-.x{background:none;border:0;color:var(--mut);font-size:20px;padding:0 2px}
-.empty{text-align:center;color:var(--mut);padding:30px 0}
-form{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
-.row{max-width:560px;margin:0 auto;display:flex;gap:8px}
-input{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:12px;font:inherit}
-.row button{border:0;border-radius:12px;background:var(--acc);color:#fff;padding:0 18px;font:inherit;font-weight:600}
-.row .w{background:var(--card);color:var(--ink);border:1px solid var(--line);font-weight:500;padding:0 12px}
-.arc{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}.arc b{flex:1;font-weight:500}.arc small{color:var(--mut);display:block;font-size:12px}.arc button,.top button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 11px;font:inherit;font-size:13px}.top{display:flex;gap:8px;margin-bottom:12px}.top button{flex:1}.tx{margin-left:8px;opacity:.7;font-size:15px}.tabs .plus{padding:8px 16px}.res{font-size:12.5px;color:var(--mut);margin-top:3px}.res a{color:var(--acc2);text-decoration:none;font-weight:500}.sk{background:none;border:0;font-size:16px;padding:0 2px;opacity:.7}.clear{background:none;border:0;color:var(--mut);font:inherit;font-size:13px;margin-top:8px;text-decoration:underline}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TodoFlow</title>
+  <style>
+    :root {
+      --bg: #f5f3ef;
+      --bg-soft: #efeae1;
+      --panel: rgba(255,255,255,0.9);
+      --panel-strong: #ffffff;
+      --ink: #1f1a17;
+      --muted: #716761;
+      --line: rgba(109, 93, 83, 0.18);
+      --primary: #cf6a3d;
+      --primary-strong: #b6582e;
+      --secondary: #7ca69a;
+      --success: #2f8d70;
+      --warning: #d39f45;
+      --danger: #d45757;
+      --shadow: 0 18px 40px rgba(37, 22, 14, 0.08);
+      --radius: 22px;
+    }
+
+    body[data-theme="dark"] {
+      --bg: #171412;
+      --bg-soft: #201d1a;
+      --panel: rgba(39,35,31,0.96);
+      --panel-strong: #292521;
+      --ink: #f3eee9;
+      --muted: #c7bdb3;
+      --line: rgba(176, 160, 146, 0.14);
+      --primary: #ea8f60;
+      --primary-strong: #d67e4d;
+      --secondary: #7db5a8;
+      --success: #73c19d;
+      --warning: #ecbe66;
+      --danger: #f28c8c;
+      --shadow: 0 18px 40px rgba(0,0,0,0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(207,106,61,0.12), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(124,166,154,0.18), transparent 30%),
+        var(--bg);
+      color: var(--ink);
+      font: 16px/1.5 "Segoe UI", Tahoma, sans-serif;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 18px 48px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      letter-spacing: -0.04em;
+    }
+
+    .icon-btn {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--ink);
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+      min-height: 110px;
+    }
+
+    .stat-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      margin: 0;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+      overflow: hidden;
+    }
+
+    .form-panel {
+      padding: 18px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+    }
+
+    .task-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .task-form input,
+    .task-form textarea,
+    .task-form select,
+    .search-box {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      color: var(--ink);
+      padding: 13px 14px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .task-form input:focus,
+    .task-form textarea:focus,
+    .task-form select:focus,
+    .search-box:focus {
+      border-color: rgba(207, 106, 61, 0.5);
+      box-shadow: 0 0 0 4px rgba(207, 106, 61, 0.09);
+    }
+
+    textarea {
+      min-height: 94px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1.2fr 0.7fr 0.8fr;
+      gap: 12px;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      cursor: pointer;
+      padding: 11px 17px;
+      font-weight: 700;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #fff;
+      box-shadow: 0 12px 25px rgba(207,106,61,0.25);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    .btn-danger {
+      background: transparent;
+      border-color: rgba(212,87,87,0.25);
+      color: var(--danger);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 18px 0;
+    }
+
+    .search-wrap {
+      flex: 1 1 220px;
+      min-width: 180px;
+    }
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 0;
+      padding: 0 18px 18px;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--bg);
+    }
+
+    .task-list {
+      padding: 0 18px 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px 12px;
+      transition: border-color 0.2s ease, transform 0.12s ease;
+    }
+
+    .task-item:hover {
+      border-color: rgba(207, 106, 61, 0.32);
+      transform: translateY(-1px);
+    }
+
+    .task-item.done {
+      opacity: 0.7;
+    }
+
+    .checkbox {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .task-item.done .checkbox {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .task-item.done .checkbox::after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 6px;
+      height: 11px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .task-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .task-title {
+      margin: 0;
+      font-size: 1.02rem;
+      letter-spacing: -0.02em;
+      overflow-wrap: anywhere;
+    }
+
+    .task-item.done .task-title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .priority {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 1px solid transparent;
+    }
+
+    .priority.low { background: rgba(124,166,154,0.12); color: var(--secondary); border-color: rgba(124,166,154,0.3); }
+    .priority.medium { background: rgba(211,159,69,0.12); color: var(--warning); border-color: rgba(211,159,69,0.25); }
+    .priority.high { background: rgba(212,87,87,0.12); color: var(--danger); border-color: rgba(212,87,87,0.22); }
+
+    .task-notes {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      overflow-wrap: anywhere;
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(127, 117, 108, 0.08);
+      border-radius: 999px;
+      padding: 6px 8px;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+      padding-left: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mini-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .mini-btn.danger {
+      border-color: rgba(212,87,87,0.25);
+      color: var(--danger);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      padding: 28px 12px 12px;
+      font-size: 0.96rem;
+    }
+
+    @media (max-width: 760px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .form-row { grid-template-columns: 1fr; }
+      .task-item { flex-wrap: wrap; }
+      .task-actions { width: 100%; justify-content: flex-start; margin-left: 0; padding-left: 0; }
+    }
+
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr; }
+      .app { padding-left: 12px; padding-right: 12px; }
+      .panel, .task-list, .toolbar { padding-left: 12px; padding-right: 12px; }
+      .task-form { gap: 10px; }
+    }
+  </style>
 </head>
-<body>
-<main>
-<h1>Att göra</h1>
-<div class="sub" id="sub"></div>
-<div class="top"><button id="new">＋ Ny lista</button><button id="hist">Tidigare listor</button></div>
-<div class="bar"><i id="bar"></i></div>
-<div class="tabs" id="tabs"></div>
-<ul id="list"></ul>
-<div id="arch" hidden></div>
-<div style="text-align:center"><button class="clear" id="clr">Rensa avklarade</button></div>
-</main>
-<form id="f"><div class="row">
-<input id="in" placeholder="Lägg till…" autocomplete="off" enterkeyhint="done">
-<button type="button" class="w" id="who">Båda</button>
-<button type="submit">+</button>
-</div></form>
-<script>
-var DEF=["Hem","Inköp","Bröllop","Drömmar"],WHO=["Båda","Bashir","Shams"];
-var S={tasks:[],tab:"Hem",date:"",arch:[]},wi=0,showArch=false;
-try{var r=localStorage.getItem("attgora2");if(r)S=JSON.parse(r)}catch(e){}
-function $(i){return document.getElementById(i)}
-function save(){try{localStorage.setItem("attgora2",JSON.stringify(S))}catch(e){}}
-function today(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
-function nice(k){var p=k.split("-"),d=new Date(p[0],p[1]-1,p[2]);return d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"})}
-function rollover(label){
-  if(S.tasks.length){S.arch.unshift({date:S.date||today(),tasks:S.tasks,at:label||""})}
-  S.tasks=S.tasks.filter(function(t){return !t.d}).map(function(t){return{x:t.x,l:t.l,w:t.w,d:false}});
-  S.date=today();save();
-}
-if(S.date&&S.date!==today())rollover("Sparad automatiskt");
-if(!S.date){S.date=today();save()}
-if(!S.lists||!S.lists.length){S.lists=DEF.slice();save()}
-if(S.lists.indexOf(S.tab)<0){S.tab=S.lists[0]}
-function txt(e){
-  var o="Att göra – "+nice(e.date)+"\n";
-  var names=[];e.tasks.forEach(function(t){if(names.indexOf(t.l)<0)names.push(t.l)});
-  names.forEach(function(l){var a=e.tasks.filter(function(t){return t.l===l});if(!a.length)return;
-    o+="\n"+l.toUpperCase()+"\n";a.forEach(function(t){o+=(t.d?"[x] ":"[ ] ")+t.x+" ("+t.w+")\n"})});
-  return o}
-async function dl(name,text){
-  var b=new Blob([text],{type:"text/plain"});
-  try{var d=window.claude&&await claude.use("downloads");if(d){await d.save({filename:name,data:b});return}}catch(e){if(e&&e.code==="declined")return}
-  try{var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove()}catch(e){}
-}
-function render(){
-  $("list").hidden=showArch;$("arch").hidden=!showArch;$("tabs").hidden=showArch;$("clr").hidden=showArch;
-  $("f").hidden=showArch;$("hist").textContent=showArch?"← Tillbaka":"Tidigare listor ("+S.arch.length+")";
-  if(showArch){$("sub").textContent="Sparade listor";renderArch();return}
-  var all=S.tasks.filter(function(t){return t.l===S.tab}),done=all.filter(function(t){return t.d}).length;
-  $("sub").textContent=nice(S.date)+(all.length?" · "+done+" av "+all.length+" klara":"");
-  $("bar").style.width=all.length?(done/all.length*100)+"%":"0";
-  $("tabs").innerHTML="";
-  S.lists.forEach(function(l){var b=document.createElement("button");b.textContent=l;
-    if(l===S.tab){b.className="on";if(S.lists.length>1){var x=document.createElement("span");x.className="tx";x.textContent="×";
-      x.onclick=function(ev){ev.stopPropagation();var n=S.tasks.filter(function(t){return t.l===l}).length;
-        if(confirm("Ta bort fliken "+l+(n?" och dess "+n+" saker?":"?"))){S.tasks=S.tasks.filter(function(t){return t.l!==l});
-          S.lists=S.lists.filter(function(q){return q!==l});S.tab=S.lists[0];save();render()}};b.appendChild(x)}}
-    b.onclick=function(){S.tab=l;save();render()};$("tabs").appendChild(b)});
-  var p=document.createElement("button");p.textContent="＋";p.className="plus";
-  p.onclick=function(){var n=(prompt("Namn på ny flik:")||"").trim().slice(0,24);if(!n)return;
-    if(S.lists.indexOf(n)<0)S.lists.push(n);S.tab=n;save();render()};$("tabs").appendChild(p);
-  var ul=$("list");ul.innerHTML="";
-  if(!all.length)ul.innerHTML='<div class="empty">Skriv något nedan för att börja ✨</div>';
-  all.slice().sort(function(a,b){return a.d-b.d}).forEach(function(t){
-    var li=document.createElement("li");if(t.d)li.className="done";
-    var c=document.createElement("button");c.className="ck";c.textContent=t.d?"✓":"";
-    c.onclick=function(){t.d=!t.d;save();render()};
-    var s=document.createElement("span");s.className="t";s.textContent=t.x;
-    var w=document.createElement("span");w.className="who";w.textContent=t.w;
-    var x=document.createElement("button");x.className="x";x.textContent="×";
-    x.onclick=function(){S.tasks=S.tasks.filter(function(q){return q!==t});save();render()};
-    if(t.s&&t.s.st!=="ej"){var q=document.createElement("div");q.className="res";
-      if(t.s.st==="sok")q.textContent="🔎 Soker letar…";
-      else if(t.s.st==="ok"){var tx=t.s.butik+" · "+t.s.namn+(t.s.pris?" · "+t.s.pris:"");
-        if(t.s.url){var an=document.createElement("a");an.href=t.s.url;an.target="_blank";an.rel="noopener";an.textContent=tx;q.appendChild(an)}else q.textContent=tx}
-      else if(t.s.st==="nej")q.textContent="Hittades inte hos Willys eller ICA Maxi";
-      else q.textContent="Soker kunde inte söka just nu";
-      s.appendChild(q)}
-    var sk=null;if(!t.s||t.s.st==="fel"||t.s.st==="nej"){sk=document.createElement("button");sk.className="sk";sk.textContent="🔎";sk.title="Låt Soker leta";sk.onclick=function(){soka(t)}}
-    li.append(c,s,w);if(sk)li.append(sk);li.append(x);ul.appendChild(li)});
-}
-async function soka(t){
-  t.s={st:"sok"};save();render();
-  try{
-    var r=await fetch("/api/soker",{method:"POST",headers:{"Content-Type":"application/json","x-kod":localStorage.getItem("sokerkod")||""},body:JSON.stringify({vara:t.x})});
-    if(r.status===401){var k=prompt("Kod för Soker:");if(k){localStorage.setItem("sokerkod",k);return soka(t)}t.s=null;save();render();return}
-    var d=await r.json();t.s=r.ok&&d.st?d:{st:"fel"};
-  }catch(e){t.s={st:"fel"}}
-  save();render();
-}
-function renderArch(){
-  var a=$("arch");a.innerHTML="";
-  if(!S.arch.length){a.innerHTML='<div class="empty">Inga sparade listor än.<br>Dagens lista sparas automatiskt vid nästa dagsskifte.</div>';return}
-  S.arch.forEach(function(e,i){
-    var n=e.tasks.filter(function(t){return t.d}).length;
-    var r=document.createElement("div");r.className="arc";
-    r.innerHTML="<b></b>";r.firstChild.textContent=nice(e.date);
-    var sm=document.createElement("small");sm.textContent=n+" av "+e.tasks.length+" klara";r.firstChild.appendChild(sm);
-    var g=document.createElement("button");g.textContent="Ladda ned";g.onclick=function(){dl("att-gora-"+e.date+".txt",txt(e))};
-    var x=document.createElement("button");x.textContent="×";x.onclick=function(){if(confirm("Ta bort listan?")){S.arch.splice(i,1);save();render()}};
-    r.append(g,x);a.appendChild(r)});
-}
-$("who").onclick=function(){wi=(wi+1)%3;$("who").textContent=WHO[wi]};
-$("f").onsubmit=function(e){e.preventDefault();var v=$("in").value.trim();if(!v)return;
-  var nt={x:v,l:S.tab,w:WHO[wi],d:false};S.tasks.push(nt);$("in").value="";save();render();if(S.tab==="Inköp")soka(nt)};
-$("clr").onclick=function(){S.tasks=S.tasks.filter(function(t){return !(t.l===S.tab&&t.d)});save();render()};
-$("new").onclick=function(){if(!S.tasks.length){return}
-  if(confirm("Spara dagens lista och börja en ny? Oavklarade saker följer med.")){rollover("Sparad manuellt");showArch=false;render()}};
-$("hist").onclick=function(){showArch=!showArch;render()};
-document.addEventListener("visibilitychange",function(){if(!document.hidden&&S.date!==today()){rollover("Sparad automatiskt");render()}});
-render();
-</script>
+<body data-theme="light">
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Dina uppgifter</p>
+        <h1>TodoFlow</h1>
+      </div>
+      <button id="themeToggle" class="icon-btn" aria-label="Ändra tema">🌙</button>
+    </header>
+
+    <section id="stats" class="stats" aria-live="polite"></section>
+
+    <section class="panel form-panel">
+      <div class="panel-header">
+        <h2 id="formTitle">Lägg till uppgift</h2>
+      </div>
+      <form id="taskForm" class="task-form">
+        <input id="taskTitle" name="taskTitle" type="text" maxlength="120" placeholder="Vad vill du göra?" required />
+        <textarea id="taskNotes" name="taskNotes" maxlength="280" placeholder="Kort notering (valfritt)"></textarea>
+        <div class="form-row">
+          <input id="taskDate" name="taskDate" type="date" />
+          <select id="taskPriority" name="taskPriority">
+            <option value="low">Låg prioritet</option>
+            <option value="medium" selected>Medel</option>
+            <option value="high">Hög prioritet</option>
+          </select>
+          <select id="taskCategory" name="taskCategory"></select>
+        </div>
+        <div class="actions">
+          <button type="button" id="cancelEdit" class="btn btn-secondary" hidden>Avbryt</button>
+          <div style="margin-left:auto; display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" id="clearCompleted" class="btn btn-secondary">Rensa klara</button>
+            <button type="submit" id="submitTask" class="btn btn-primary">Lägg till</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <input id="searchInput" class="search-box" type="search" placeholder="Sök i uppgifter..." aria-label="Sök i uppgifter" />
+        </div>
+      </div>
+      <div id="categoryTabs" class="categories" aria-label="Kategori filter"></div>
+      <div id="filterTabs" class="categories" aria-label="Filter"></div>
+      <div id="taskList" class="task-list" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'todoFlowLocalTasks';
+    const THEME_KEY = 'todoFlowTheme';
+    const DEFAULT_CATEGORIES = ['Hem', 'Arbete', 'Inköp', 'Övrigt'];
+    const FILTERS = [
+      { id: 'all', label: 'Alla' },
+      { id: 'active', label: 'Aktiva' },
+      { id: 'completed', label: 'Klara' },
+      { id: 'today', label: 'Idag' },
+      { id: 'upcoming', label: 'Kommande' },
+      { id: 'overdue', label: 'Försenade' }
+    ];
+
+    const state = {
+      tasks: [],
+      categories: [...DEFAULT_CATEGORIES],
+      theme: localStorage.getItem(THEME_KEY) || 'light',
+      filter: 'all',
+      category: 'all',
+      search: ''
+    };
+
+    const form = document.getElementById('taskForm');
+    const titleInput = document.getElementById('taskTitle');
+    const notesInput = document.getElementById('taskNotes');
+    const dateInput = document.getElementById('taskDate');
+    const priorityInput = document.getElementById('taskPriority');
+    const categoryInput = document.getElementById('taskCategory');
+    const taskList = document.getElementById('taskList');
+    const searchInput = document.getElementById('searchInput');
+    const filterTabs = document.getElementById('filterTabs');
+    const categoryTabs = document.getElementById('categoryTabs');
+    const stats = document.getElementById('stats');
+    const themeToggle = document.getElementById('themeToggle');
+    const cancelEditBtn = document.getElementById('cancelEdit');
+    const formTitle = document.getElementById('formTitle');
+    const submitTaskBtn = document.getElementById('submitTask');
+    const clearCompletedBtn = document.getElementById('clearCompleted');
+
+    let editingId = null;
+
+    function normalizeTask(task = {}) {
+      return {
+        id: String(task.id || `task-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`),
+        title: String(task.title || 'Uppgift').trim(),
+        notes: String(task.notes || '').trim(),
+        dueDate: task.dueDate || '',
+        priority: ['low', 'medium', 'high'].includes(task.priority) ? task.priority : 'medium',
+        category: task.category || 'Övrigt',
+        completed: Boolean(task.completed),
+        createdAt: task.createdAt || new Date().toISOString()
+      };
+    }
+
+    function generateId() {
+      return `task-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+    }
+
+    function todayString() {
+      const d = new Date();
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString().slice(0, 10);
+    }
+
+    function formatDate(value) {
+      if (!value) return 'Ingen deadline';
+      const d = new Date(value + 'T00:00:00');
+      if (Number.isNaN(d.getTime())) return 'Ingen deadline';
+      return d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
+    }
+
+    function comparePriority(a, b) {
+      const order = { high: 3, medium: 2, low: 1 };
+      return order[b.priority] - order[a.priority];
+    }
+
+    function readLocalTasks() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return [];
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed.map(normalizeTask) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveLocalTasks() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.tasks));
+    }
+
+    function buildSampleTasks() {
+      return [
+        { id: generateId(), title: 'Betala elräkning', notes: 'Kontrollera senaste fakturan och godkänn betalning.', category: 'Hem', priority: 'high', dueDate: todayString(), completed: false },
+        { id: generateId(), title: 'Boka läkarbesök', notes: 'Ring mottagningen och bekräfta tiden.', category: 'Arbete', priority: 'medium', dueDate: '', completed: false },
+        { id: generateId(), title: 'Handla mat', notes: 'Mjölk, ägg, sallad och kaffe.', category: 'Inköp', priority: 'low', dueDate: todayString(), completed: true }
+      ];
+    }
+
+    function hydrateLegacyState() {
+      const rawLegacy = localStorage.getItem('attgora2');
+      if (!rawLegacy) return null;
+      try {
+        const legacy = JSON.parse(rawLegacy);
+        if (!Array.isArray(legacy.tasks)) return null;
+        return legacy.tasks.map((task) => ({
+          id: generateId(),
+          title: task.x || 'Uppgift',
+          notes: '',
+          category: task.l || 'Övrigt',
+          priority: task.w === 'Bashir' ? 'high' : 'medium',
+          dueDate: '',
+          completed: !!task.d,
+          createdAt: new Date().toISOString()
+        }));
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function getApiBase() {
+      const { protocol, hostname } = window.location;
+      if (protocol === 'file:') return '';
+      if (hostname === 'localhost' || hostname === '127.0.0.1') return 'http://localhost:3000';
+      return window.location.origin;
+    }
+
+    async function requestApi(path, options = {}) {
+      const response = await fetch(path, {
+        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+        ...options
+      });
+
+      const text = await response.text();
+      let data = {};
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch (error) {
+          data = { message: text };
+        }
+      }
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Request failed');
+      }
+
+      return data;
+    }
+
+    async function loadTasksFromServer() {
+      const base = getApiBase();
+      if (!base) return [];
+
+      try {
+        const data = await requestApi(`${base}/api/tasks`, { method: 'GET' });
+        return Array.isArray(data.tasks) ? data.tasks.map(normalizeTask) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    async function initializeTasks() {
+      const legacy = hydrateLegacyState();
+      const localTasks = readLocalTasks();
+      state.tasks = localTasks.length ? localTasks : (legacy || []);
+
+      const serverTasks = await loadTasksFromServer();
+      if (serverTasks.length) {
+        state.tasks = serverTasks;
+      }
+
+      if (!state.tasks.length) {
+        state.tasks = buildSampleTasks();
+      }
+
+      saveLocalTasks();
+    }
+
+    function applyTheme() {
+      document.body.dataset.theme = state.theme;
+      themeToggle.textContent = state.theme === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem(THEME_KEY, state.theme);
+    }
+
+    function populateCategorySelect() {
+      categoryInput.innerHTML = '';
+      state.categories.forEach((category) => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryInput.appendChild(option);
+      });
+    }
+
+    function renderStats() {
+      const all = state.tasks.length;
+      const completed = state.tasks.filter((task) => task.completed).length;
+      const active = all - completed;
+      const overdue = state.tasks.filter((task) => !task.completed && task.dueDate && task.dueDate < todayString()).length;
+      const today = state.tasks.filter((task) => !task.completed && task.dueDate === todayString()).length;
+
+      const items = [
+        { label: 'Totalt', value: all },
+        { label: 'Aktiva', value: active },
+        { label: 'Klara', value: completed },
+        { label: 'Idag', value: today }
+      ];
+
+      stats.innerHTML = items.map((item) => `
+        <article class="stat-card">
+          <span class="stat-label">${item.label}</span>
+          <p class="stat-value">${item.value}</p>
+        </article>
+      `).join('');
+
+      if (overdue > 0) {
+        const overdueCard = document.createElement('article');
+        overdueCard.className = 'stat-card';
+        overdueCard.innerHTML = `
+          <span class="stat-label">Försenade</span>
+          <p class="stat-value">${overdue}</p>
+        `;
+        stats.appendChild(overdueCard);
+      }
+    }
+
+    function renderFilterTabs() {
+      filterTabs.innerHTML = FILTERS.map((filter) => {
+        const active = state.filter === filter.id ? 'active' : '';
+        return `<button class="chip ${active}" type="button" data-filter="${filter.id}">${filter.label}</button>`;
+      }).join('');
+
+      filterTabs.querySelectorAll('[data-filter]').forEach((button) => {
+        button.addEventListener('click', () => {
+          state.filter = button.dataset.filter;
+          render();
+        });
+      });
+    }
+
+    function renderCategoryTabs() {
+      const categories = ['all', ...state.categories];
+      categoryTabs.innerHTML = categories.map((category) => {
+        const label = category === 'all' ? 'Alla' : category;
+        const active = state.category === category ? 'active' : '';
+        return `<button class="chip ${active}" type="button" data-category="${category}">${label}</button>`;
+      }).join('');
+
+      categoryTabs.querySelectorAll('[data-category]').forEach((button) => {
+        button.addEventListener('click', () => {
+          state.category = button.dataset.category;
+          render();
+        });
+      });
+    }
+
+    function getFilteredTasks() {
+      const query = state.search.trim().toLowerCase();
+      let tasks = [...state.tasks];
+
+      if (state.category !== 'all') {
+        tasks = tasks.filter((task) => task.category === state.category);
+      }
+
+      if (query) {
+        tasks = tasks.filter((task) => {
+          const haystack = `${task.title} ${task.notes}`.toLowerCase();
+          return haystack.includes(query);
+        });
+      }
+
+      if (state.filter === 'active') {
+        tasks = tasks.filter((task) => !task.completed);
+      }
+
+      if (state.filter === 'completed') {
+        tasks = tasks.filter((task) => task.completed);
+      }
+
+      if (state.filter === 'today') {
+        tasks = tasks.filter((task) => !task.completed && task.dueDate === todayString());
+      }
+
+      if (state.filter === 'upcoming') {
+        tasks = tasks.filter((task) => !task.completed && task.dueDate && task.dueDate > todayString());
+      }
+
+      if (state.filter === 'overdue') {
+        tasks = tasks.filter((task) => !task.completed && task.dueDate && task.dueDate < todayString());
+      }
+
+      tasks.sort((a, b) => {
+        if (a.completed !== b.completed) return Number(a.completed) - Number(b.completed);
+        const dateA = a.dueDate || '9999-12-31';
+        const dateB = b.dueDate || '9999-12-31';
+        const dateCompare = dateA.localeCompare(dateB);
+        if (dateCompare !== 0) return dateCompare;
+        return comparePriority(a, b);
+      });
+
+      return tasks;
+    }
+
+    async function persistChanges(method, taskOrTasks) {
+      const payload = Array.isArray(taskOrTasks)
+        ? { tasks: taskOrTasks.map(normalizeTask) }
+        : { task: normalizeTask(taskOrTasks) };
+
+      const base = getApiBase();
+
+      if (base) {
+        try {
+          const response = await requestApi(`${base}/api/tasks`, {
+            method,
+            body: JSON.stringify(payload)
+          });
+          if (Array.isArray(response.tasks)) {
+            state.tasks = response.tasks.map(normalizeTask);
+            saveLocalTasks();
+            render();
+            return;
+          }
+        } catch (error) {
+          // Fallback to local storage when backend is unavailable.
+        }
+      }
+
+      if (method === 'POST' && !Array.isArray(taskOrTasks)) {
+        state.tasks.push(normalizeTask(taskOrTasks));
+      }
+
+      if (method === 'PUT') {
+        if (Array.isArray(taskOrTasks)) {
+          state.tasks = taskOrTasks.map(normalizeTask);
+        } else {
+          const item = normalizeTask(taskOrTasks);
+          const index = state.tasks.findIndex((task) => task.id === item.id);
+          if (index >= 0) {
+            state.tasks[index] = item;
+          } else {
+            state.tasks.push(item);
+          }
+        }
+      }
+
+      if (method === 'DELETE' && !Array.isArray(taskOrTasks)) {
+        const id = normalizeTask(taskOrTasks).id;
+        state.tasks = state.tasks.filter((task) => task.id !== id);
+      }
+
+      saveLocalTasks();
+      render();
+    }
+
+    function renderTaskList() {
+      const tasks = getFilteredTasks();
+      if (!tasks.length) {
+        taskList.innerHTML = '<div class="empty-state">Inga uppgifter matchar ditt filter just nu.</div>';
+        return;
+      }
+
+      taskList.innerHTML = tasks.map((task) => {
+        const priorityClass = task.priority || 'medium';
+        const notesHtml = task.notes ? `<p class="task-notes">${escapeHtml(task.notes)}</p>` : '';
+        const dueHtml = task.dueDate
+          ? `<span class="meta-pill">📅 ${formatDate(task.dueDate)}</span>`
+          : '<span class="meta-pill">📌 Ingen deadline</span>';
+
+        return `
+          <article class="task-item ${task.completed ? 'done' : ''}" data-task-id="${task.id}">
+            <button class="checkbox" type="button" data-action="toggle" data-id="${task.id}" aria-label="Markera uppgift som klar"></button>
+            <div class="task-content">
+              <div class="task-head">
+                <h3 class="task-title">${escapeHtml(task.title)}</h3>
+                <span class="priority ${priorityClass}">${priorityLabel(task.priority)}</span>
+              </div>
+              ${notesHtml}
+              <div class="task-meta">
+                ${dueHtml}
+                <span class="meta-pill">🏷️ ${escapeHtml(task.category)}</span>
+              </div>
+            </div>
+            <div class="task-actions">
+              <button class="mini-btn" type="button" data-action="edit" data-id="${task.id}">Redigera</button>
+              <button class="mini-btn danger" type="button" data-action="delete" data-id="${task.id}">Ta bort</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      taskList.querySelectorAll('[data-action]').forEach((button) => {
+        const { action, id } = button.dataset;
+        button.addEventListener('click', async () => {
+          const task = state.tasks.find((item) => item.id === id);
+          if (!task) return;
+
+          if (action === 'toggle') {
+            await persistChanges('PUT', { ...task, completed: !task.completed });
+            return;
+          }
+
+          if (action === 'delete') {
+            if (window.confirm('Vill du ta bort den här uppgiften?')) {
+              await persistChanges('DELETE', task);
+            }
+            return;
+          }
+
+          if (action === 'edit') {
+            editingId = id;
+            titleInput.value = task.title;
+            notesInput.value = task.notes || '';
+            dateInput.value = task.dueDate || '';
+            priorityInput.value = task.priority || 'medium';
+            categoryInput.value = task.category || state.categories[0];
+            formTitle.textContent = 'Redigera uppgift';
+            submitTaskBtn.textContent = 'Spara ändringen';
+            cancelEditBtn.hidden = false;
+            titleInput.focus();
+          }
+        });
+      });
+    }
+
+    function priorityLabel(priority) {
+      const labels = { low: 'Låg', medium: 'Medel', high: 'Hög' };
+      return labels[priority] || 'Medel';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function resetForm() {
+      editingId = null;
+      form.reset();
+      priorityInput.value = 'medium';
+      categoryInput.value = state.categories[0] || 'Övrigt';
+      formTitle.textContent = 'Lägg till uppgift';
+      submitTaskBtn.textContent = 'Lägg till';
+      cancelEditBtn.hidden = true;
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const title = titleInput.value.trim();
+      if (!title) {
+        titleInput.focus();
+        return;
+      }
+
+      const values = {
+        id: editingId || generateId(),
+        title,
+        notes: notesInput.value.trim(),
+        dueDate: dateInput.value,
+        priority: priorityInput.value,
+        category: categoryInput.value || 'Övrigt',
+        completed: false
+      };
+
+      if (editingId) {
+        const current = state.tasks.find((task) => task.id === editingId);
+        const taskToSave = current ? { ...current, ...values } : values;
+        await persistChanges('PUT', taskToSave);
+      } else {
+        await persistChanges('POST', values);
+      }
+
+      resetForm();
+    });
+
+    cancelEditBtn.addEventListener('click', resetForm);
+
+    clearCompletedBtn.addEventListener('click', async () => {
+      const remaining = state.tasks.filter((task) => !task.completed);
+      if (remaining.length === state.tasks.length) return;
+      state.tasks = remaining;
+
+      const base = getApiBase();
+      if (base) {
+        try {
+          const response = await requestApi(`${base}/api/tasks`, {
+            method: 'PUT',
+            body: JSON.stringify({ tasks: state.tasks.map(normalizeTask) })
+          });
+          if (Array.isArray(response.tasks)) {
+            state.tasks = response.tasks.map(normalizeTask);
+            saveLocalTasks();
+            render();
+            return;
+          }
+        } catch (error) {
+          // Fall back to local-only storage.
+        }
+      }
+
+      saveLocalTasks();
+      render();
+    });
+
+    themeToggle.addEventListener('click', () => {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme();
+    });
+
+    searchInput.addEventListener('input', (event) => {
+      state.search = event.target.value;
+      render();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && editingId) {
+        resetForm();
+      }
+    });
+
+    function render() {
+      populateCategorySelect();
+      if (!state.categories.includes(categoryInput.value)) {
+        categoryInput.value = state.categories[0] || 'Övrigt';
+      }
+      renderStats();
+      renderFilterTabs();
+      renderCategoryTabs();
+      renderTaskList();
+      searchInput.value = state.search;
+      applyTheme();
+    }
+
+    async function init() {
+      if (!state.categories.length) {
+        state.categories = [...DEFAULT_CATEGORIES];
+      }
+      await initializeTasks();
+      categoryInput.value = state.categories[0] || 'Övrigt';
+      render();
+    }
+
+    init();
+  </script>
 </body>
 </html>
